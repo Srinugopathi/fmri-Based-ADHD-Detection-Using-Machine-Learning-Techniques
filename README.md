@@ -5,7 +5,6 @@ Author: Srinu Gopathi
 University: Georgia State University
 Program: M.S. in Data Science and Analytics
 
-⸻
 
 Project Overview
 
