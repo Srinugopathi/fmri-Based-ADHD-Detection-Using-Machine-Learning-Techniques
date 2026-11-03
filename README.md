@@ -1,237 +1,172 @@
-fMRI-Based ADHD Detection Using Machine Learning
-
+🧠 fMRI-Based ADHD Detection Using Machine Learning
 
 Author: Srinu Gopathi
 University: Georgia State University
 Program: M.S. in Data Science and Analytics
 
+⸻
 
-Project Overview
+📌 Project Overview
 
-Attention-Deficit/Hyperactivity Disorder (ADHD) is a neurological condition that can affect attention, behavior, and impulse control. ADHD is usually diagnosed through clinical evaluations, behavioral observations, and a review of medical history. However, studying patterns in brain activity may provide additional information to support this process.
+Attention-Deficit/Hyperactivity Disorder (ADHD) is a neurodevelopmental condition that affects attention, behavior, and impulse control. ADHD is typically diagnosed through clinical evaluations, behavioral observations, and medical history. However, analyzing brain activity may provide additional insights to support clinical assessments.
 
-In this project, I explored how machine learning can be used to distinguish between individuals with ADHD and typically developing individuals using functional Magnetic Resonance Imaging (fMRI) data.
+In this project, we explored how machine learning can identify ADHD-related patterns using functional Magnetic Resonance Imaging (fMRI) data.
 
-The main goal was to identify meaningful differences in brain activity, extract useful features from fMRI scans, and compare different machine learning models to determine which approach performed best.
+Our goal was to analyze differences in brain activity between individuals with ADHD and typically developing individuals, extract meaningful features, and evaluate multiple machine learning algorithms.
 
-Instead of feeding the entire brain scan directly into a model, the project focused on selecting informative brain voxels and using statistical features to improve classification.
+Rather than using entire brain scans directly, we focused on voxel-level statistical analysis, feature selection, and dimensionality reduction to build classification models.
 
-Dataset
+📊 Dataset
 
-For this project, we used the ADHD-200 dataset, a publicly available neuroimaging dataset that contains resting-state fMRI scans.
+We used the publicly available ADHD-200 dataset, focusing on the New York University (NYU) subset, which includes 263 participants.
 
-Our analysis focused on the New York University (NYU) subset, which includes 263 participants from two groups:
+The dataset contains two groups:
 
-* ADHD: Individuals diagnosed with Attention-Deficit/Hyperactivity Disorder.
-* Typically Developing (TD): Individuals without an ADHD diagnosis.
+* ADHD: Participants diagnosed with Attention-Deficit/Hyperactivity Disorder.
+* Typically Developing (TD): Participants without an ADHD diagnosis.
 
-The scans contain Blood Oxygen Level Dependent (BOLD) signals, which provide an indirect measure of changes related to brain activity.
+The resting-state fMRI scans contain Blood Oxygen Level Dependent (BOLD) signals, which indirectly reflect changes associated with brain activity.
 
-By examining how these signals change over time, we can explore possible differences between the two groups.
+We analyzed variations in these signals to identify patterns that could help distinguish the two groups.
 
-Project Methodology
+🔬 Methodology
 
-The project was completed in several stages, beginning with brain signal analysis and ending with machine learning model evaluation.
+Our project followed a structured machine learning workflow:
 
-1. Understanding Brain Activity
+fMRI Data → Voxel Analysis → Feature Selection → Feature Extraction → PCA → Machine Learning → Evaluation
 
-We began by analyzing the BOLD signals from the fMRI scans.
+1. Voxel-Level Brain Activity Analysis
 
-Each brain scan contains thousands of voxels, and each voxel has a time series that shows how its signal changes over time.
+We calculated the standard deviation (SD) of each voxel’s BOLD signal over time.
 
-We calculated the standard deviation of each voxel’s time series to measure how much its signal fluctuated.
+This produced a 3D representation of signal variability for each participant, allowing us to examine differences between ADHD and typically developing groups.
 
-This allowed us to create a 3D representation of signal variability for each participant.
+2. Brain Pattern Comparison
 
-2. Comparing ADHD and Non-ADHD Brain Patterns
+We compared voxel-level signal variability using:
 
-After calculating the standard deviation values, we compared the ADHD and typically developing groups.
+* Histograms
+* Box plots
+* Density plots
+* 3D brain visualizations
 
-We used histograms, density plots, and box plots to examine differences in voxel-level signal variability.
+Our analysis highlighted differences in signal variability across brain regions, including areas such as the frontal lobe and thalamus.
 
-Our analysis showed differences in the distribution of brain signal fluctuations between the two groups.
+3. Voxel Selection Using Otsu’s Thresholding
 
-Some of these differences appeared in areas such as the frontal lobe and thalamus, which have been studied in connection with attention and behavioral regulation.
+To reduce unnecessary information, we experimented with percentile-based thresholds and applied Otsu’s thresholding to select relevant voxels.
 
-3. Selecting Important Brain Voxels
+The calculated threshold was approximately 0.199, corresponding to the 87th percentile in our analysis.
 
-One of the main challenges was working with the large number of voxels in each brain scan.
+This helped identify regions with potentially useful information for classification.
 
-Not every voxel contains useful information for distinguishing ADHD from typical development.
+4. K-Means Clustering
 
-To address this, we tested several percentile thresholds, including the 70th, 80th, 90th, and 98th percentiles.
+We applied K-means clustering to organize selected voxels into six clusters.
 
-We also applied Otsu’s thresholding, which automatically selects a threshold based on the distribution of voxel values.
-
-The calculated threshold was approximately 0.199, which corresponded to the 87th percentile in our analysis.
-
-This process helped us focus on the most informative voxels instead of using the entire brain image.
-
-4. Clustering Brain Regions
-
-After selecting the relevant voxels, we used K-means clustering to group them into six clusters.
-
-The goal was to visualize how the selected voxels were distributed across different brain regions.
-
-This helped us examine the spatial patterns of the selected voxels and better understand which areas were highlighted by the analysis.
+This helped us visualize spatial patterns and examine how the selected voxels were distributed across different regions of the brain.
 
 5. Feature Extraction
 
-We selected 22,404 voxels for further analysis.
+We selected 22,404 voxels and extracted statistical information from their BOLD signal time series.
 
-From these voxels, we extracted statistical features from the BOLD signal time series.
+The main features were:
 
-The main features included:
+* Standard Deviation: Measures signal variability over time.
+* Range: Difference between maximum and minimum signal values.
+* Median: Middle value of the signal distribution.
 
-* Standard deviation: Measures how much the brain signal changes over time.
-* Range: Measures the difference between the highest and lowest signal values.
-* Median: Represents the middle value of the signal distribution.
-
-These features converted the complex brain imaging data into a format that could be used for machine learning.
+These features were used to train our machine learning models.
 
 6. Machine Learning Models
 
-We evaluated three supervised machine learning algorithms:
+We evaluated three classification algorithms:
 
-Random Forest
+* Random Forest: An ensemble learning algorithm that combines multiple decision trees.
+* Support Vector Machine (SVM): Finds a decision boundary that separates classes.
+* XGBoost: A gradient-boosting algorithm that combines sequential decision trees.
 
-An ensemble model that combines multiple decision trees to make predictions.
-
-Support Vector Machine (SVM)
-
-A classification algorithm that finds a decision boundary between different groups.
-
-XGBoost
-
-A gradient-boosting algorithm that builds a sequence of decision trees to improve prediction performance.
-
-We trained and evaluated these models using different feature representations to determine which approach worked best.
+We compared their performance using different feature sets.
 
 7. Dimensionality Reduction Using PCA
 
-Working with 22,404 features created a high-dimensional machine learning problem.
+Since the dataset contained thousands of features, we applied Principal Component Analysis (PCA) to reduce dimensionality while retaining 95% of the original variance.
 
-To reduce the number of features, we applied Principal Component Analysis (PCA).
+Feature Type	Original Features	After PCA
+Standard Deviation	22,404	135
+Range	22,404	129
 
-PCA transformed the original features into a smaller set of components while preserving 95% of the variance.
+We then evaluated how PCA affected the performance of each machine learning model.
 
-For the standard deviation features, PCA reduced the dimensionality from 22,404 features to 135 components.
+📈 Model Performance
 
-For the range features, it reduced the dimensionality to 129 components.
-
-We then compared model performance before and after applying PCA.
-
-Model Results
-
-We evaluated model performance using accuracy, precision, recall, and F1 score.
-
-The following table summarizes the results of the models trained on PCA-transformed standard deviation features.
+The following results were obtained using PCA-transformed standard deviation features.
 
 Model	Accuracy	Precision	Recall	F1 Score
 Random Forest + PCA	65.6%	67.4%	80.6%	73.4%
 SVM + PCA	77.1%	80.6%	80.6%	80.6%
 XGBoost + PCA	67.2%	72.2%	72.2%	72.2%
 
-Best Performing Model: SVM with PCA
+🏆 Best Performing Model
 
-Among the approaches we tested, the Support Vector Machine trained on PCA-transformed standard deviation features achieved the best overall performance.
+The Support Vector Machine (SVM) with PCA-transformed standard deviation features achieved the strongest overall performance.
 
-Final Results:
+Key Results:
 
 * Accuracy: 77.1%
 * Precision: 80.6%
 * Recall: 80.6%
 * F1 Score: 80.6%
 
-These results suggest that combining statistical features from fMRI data with dimensionality reduction can help identify patterns associated with ADHD.
+These results demonstrate that combining voxel-level statistical features with PCA can provide useful information for machine learning-based ADHD classification.
 
-Key Findings
+💡 Key Findings
 
-Several important observations emerged from this project.
+Our experiments led to several important observations:
 
-First, BOLD signal variability provided useful information for distinguishing participants with ADHD from typically developing participants.
+1. BOLD signal variability provided useful features for distinguishing ADHD and typically developing participants.
+2. Voxel selection helped us focus on potentially informative regions instead of treating every voxel equally.
+3. PCA significantly reduced dimensionality while preserving most of the original variance.
+4. SVM with PCA-transformed SD features achieved the best overall classification performance.
+5. PCA did not improve every model, showing that dimensionality reduction needs to be evaluated alongside model selection.
 
-Second, selecting relevant voxels allowed us to focus on potentially meaningful brain regions instead of treating every voxel equally.
+🛠️ Technologies Used
 
-Third, PCA greatly reduced the number of features while preserving most of the variation in the original dataset.
+Category	Technologies
+Programming	Python
+Machine Learning	Scikit-learn, Random Forest, SVM, XGBoost
+Feature Engineering	Standard Deviation, Range, Median
+Dimensionality Reduction	PCA
+Clustering	K-Means
+Image Processing	Otsu’s Thresholding
+Data Analysis	NumPy, Pandas
+Visualization	Matplotlib
+Domain	fMRI, BOLD Signal Analysis, Neuroimaging
 
-Finally, the SVM performed especially well when it was combined with PCA-transformed standard deviation features.
+🎯 Challenges and Learning Experience
 
-One important finding was that PCA did not improve the performance of every model. Its impact depended on both the selected features and the machine learning algorithm.
+One of the main challenges was working with high-dimensional fMRI data, where each brain scan contains thousands of voxels.
 
-This showed the importance of testing multiple approaches rather than assuming that one technique will work best in every situation.
+Selecting useful features and identifying meaningful signal variations required experimenting with different statistical methods and thresholding techniques.
 
-Technologies Used
+Another important challenge was understanding how machine learning models responded to dimensionality reduction. While PCA improved some results, it reduced the performance of others.
 
-Programming Language: Python
+Through this project, I gained practical experience in neuroimaging data analysis, feature engineering, dimensionality reduction, machine learning, and model evaluation.
 
-Machine Learning:
+The project reinforced the importance of understanding the data and experimenting with different approaches rather than focusing only on model accuracy.
 
-* Scikit-learn
-* Random Forest
-* Support Vector Machine
-* XGBoost
-* K-means Clustering
-* Principal Component Analysis (PCA)
 
-Data Analysis and Visualization:
+✅ Conclusion
 
-* NumPy
-* Pandas
-* Matplotlib
-* Statistical Feature Extraction
-* Otsu Thresholding
+This project explored the use of machine learning to identify ADHD-related patterns from resting-state fMRI data.
 
-Domain:
+By combining voxel-level signal analysis, Otsu’s thresholding, feature extraction, PCA, and classification algorithms, we evaluated different approaches to distinguishing individuals with ADHD from typically developing individuals.
 
-* Functional Magnetic Resonance Imaging (fMRI)
-* BOLD Signal Analysis
-* Neuroimaging
-* ADHD Classification
+Our best-performing approach was SVM with PCA-transformed standard deviation features, achieving 77.1% accuracy and an 80.6% F1 score.
 
-Challenges and Learning Experience
+The results highlight the potential of statistical feature engineering and machine learning for analyzing complex neuroimaging data.
 
-One of the biggest challenges was working with high-dimensional fMRI data.
-
-Each scan contains a large amount of information, but not all of it is equally useful for classification.
-
-Finding informative voxels, selecting an appropriate threshold, and choosing useful statistical features required several rounds of experimentation.
-
-Another challenge was understanding how different models responded to dimensionality reduction.
-
-Some models performed better after PCA was applied, while others performed worse.
-
-This project gave me practical experience with complex datasets, feature extraction, machine learning algorithms, and model evaluation.
-
-More importantly, it showed me that building a machine learning solution involves much more than training a model. Data preparation, feature selection, experimentation, and interpreting the results are all equally important.
-
-Limitations and Future Improvements
-
-Although the project produced encouraging results, there are several areas that could be improved.
-
-The analysis used only the NYU subset of the ADHD-200 dataset. Testing the models on other datasets and imaging sites would help determine how well they generalize.
-
-Future improvements could include:
-
-* Evaluating deep learning approaches such as CNNs.
-* Exploring additional brain connectivity features.
-* Testing the models on larger and more diverse neuroimaging datasets.
-* Improving feature selection and hyperparameter tuning.
-* Applying cross-site validation to evaluate model reliability.
-
-It is also important to note that this project is a research-based classification study and is not intended to replace a professional clinical diagnosis.
-
-Conclusion
-
-This project explored how machine learning can be applied to functional brain imaging data to identify patterns associated with ADHD.
-
-By combining voxel-level statistical analysis, automated thresholding, feature extraction, PCA, and classification algorithms, we developed and evaluated several approaches to ADHD classification.
-
-The strongest results came from an SVM model trained on PCA-transformed standard deviation features, achieving 77.1% accuracy and an 80.6% F1 score.
-
-Overall, this project shows how data science and machine learning can be used to study complex neuroimaging data and support research into neurological conditions.
-
-References
+📚 References
 
 1. Kim, B., et al. (2021). Finding essential parts of the brain in rs-fMRI can improve diagnosing ADHD by Deep Learning.
 2. Nash, C., Nair, R., & Naqvi, S. M. (2022). Machine Learning and ADHD Mental Health Detection – A Short Survey.
@@ -241,10 +176,10 @@ References
 
 ⸻
 
-Author
+👨‍💻 Author
 
 Srinu Gopathi
-Master of Science in Data Science and Analytics
+M.S. in Data Science and Analytics
 Georgia State University
 
 Research Interests: Machine Learning | Artificial Intelligence | Data Science | Neuroimaging | Healthcare Analytics
